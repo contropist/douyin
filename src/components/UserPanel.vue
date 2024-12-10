@@ -1,5 +1,5 @@
 <template>
-  <div id="UserPanel" @scroll="scroll" ref="page">
+  <div id="UserPanel" @scroll="scroll" @dragstart="(e) => _stopPropagation(e)" ref="page">
     <div ref="float" class="float" :class="state.floatFixed ? 'fixed' : ''">
       <div class="left">
         <Icon @click="emit('back')" class="icon" icon="eva:arrow-ios-back-fill" />
@@ -32,7 +32,7 @@
             <span>求更新</span>
           </div>
         </transition>
-        <Icon class="icon" icon="ion:search" @click.stop="$no()" />
+        <Icon class="icon" icon="ion:search" @click.stop="_no" />
         <Icon class="icon" icon="ri:more-line" @click.stop="emit('showFollowSetting')" />
       </div>
     </div>
@@ -76,7 +76,7 @@
               <img
                 src="@/assets/img/icon/me/copy.png"
                 alt=""
-                @click.stop="Utils.copy(_getUserDouyinId(props.currentItem))"
+                @click.stop="_copy(_getUserDouyinId(props.currentItem))"
               />
             </div>
           </div>
@@ -85,20 +85,16 @@
       <div class="info">
         <div class="heat">
           <div class="text">
-            <span class="num">{{
-              Utils.formatNumber(props.currentItem.author.total_favorited)
-            }}</span>
+            <span class="num">{{ _formatNumber(props.currentItem.author.total_favorited) }}</span>
             <span>获赞</span>
           </div>
           <div class="text">
-            <span class="num">{{
-              Utils.formatNumber(props.currentItem.author.following_count)
-            }}</span>
+            <span class="num">{{ _formatNumber(props.currentItem.author.following_count) }}</span>
             <span>关注</span>
           </div>
           <div class="text">
             <span class="num">{{
-              Utils.formatNumber(props.currentItem.author.mplatform_followers_count)
+              _formatNumber(props.currentItem.author.mplatform_followers_count)
             }}</span>
             <span>粉丝</span>
           </div>
@@ -234,7 +230,14 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import Utils, { $no, _checkImgUrl, _getUserDouyinId } from '@/utils'
+import {
+  _checkImgUrl,
+  _copy,
+  _formatNumber,
+  _getUserDouyinId,
+  _no,
+  _stopPropagation
+} from '@/utils'
 import { useNav } from '@/utils/hooks/useNav'
 import Posters from '@/components/Posters.vue'
 import { DefaultUser } from '@/utils/const_var'
@@ -351,7 +354,7 @@ function scroll() {
   }
 }
 
-function touchStart(e) {
+function touchStart(e: TouchEvent) {
   state.start.x = e.touches[0].pageX
   state.start.y = e.touches[0].pageY
   state.start.time = Date.now()
@@ -362,7 +365,7 @@ function touchStart(e) {
   // console.log('touchStart', page.value.scrollTop)
 }
 
-function touchMove(e) {
+function touchMove(e: TouchEvent) {
   state.move.x = e.touches[0].pageX - state.start.x
   state.move.y = e.touches[0].pageY - state.start.y
   let isNext = state.move.y < 0
@@ -405,6 +408,7 @@ function touchEnd() {
 }
 
 #UserPanel {
+  touch-action: pan-y;
   position: fixed;
   background: var(--color-user);
   height: 100%;
@@ -423,8 +427,8 @@ function touchEnd() {
     justify-content: center;
 
     .resource {
-      width: 100vw;
-      max-height: 100vw;
+      width: 100%;
+      max-height: 100%;
     }
 
     .download {
@@ -442,7 +446,7 @@ function touchEnd() {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: calc(var(--vh, 1vh) * 100);
     z-index: 3;
   }
@@ -500,7 +504,7 @@ function touchEnd() {
           grid-template-columns: 33.33% 33.33% 33.33%;
 
           .item {
-            height: calc(33.33vw * 1.3);
+            height: calc(33.33% * 1.3);
             padding: 2rem;
             overflow: hidden;
             position: relative;
@@ -572,7 +576,7 @@ function touchEnd() {
             .poster {
               border-radius: 4rem;
               width: 100%;
-              height: calc((100vw - 34rem) / 3);
+              height: calc((100% - 34rem) / 3);
               display: block;
             }
 
@@ -592,7 +596,7 @@ function touchEnd() {
       .cover {
         height: 220rem;
         object-fit: cover;
-        width: 100vw;
+        width: 100%;
         //transition: height .3s;
       }
 
@@ -977,7 +981,7 @@ function touchEnd() {
   .float {
     position: fixed;
     box-sizing: border-box;
-    width: 100vw;
+    width: 100%;
     z-index: 2;
     display: flex;
     justify-content: space-between;

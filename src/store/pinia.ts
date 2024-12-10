@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { friends, panel } from '@/api/user.ts'
+import { friends, panel } from '@/api/user'
 import enums from '@/utils/enums'
 import resource from '@/assets/data/resource'
 
@@ -11,7 +11,7 @@ export const useBaseStore = defineStore('base', {
       maskDialog: false,
       maskDialogMode: 'dark',
       version: '17.1.0',
-      excludeRoutes: [],
+      excludeNames: [],
       judgeValue: 20,
       homeRefresh: 60,
       loading: false,
@@ -50,15 +50,20 @@ export const useBaseStore = defineStore('base', {
           }
         ]
       },
-      friends: resource.users
+      friends: resource.users,
+      message: ''
     }
   },
-  getters: {},
+  getters: {
+    selectFriends() {
+      return this.friends.all.filter((v) => v.select)
+    }
+  },
   actions: {
     async init() {
       const r = await panel()
       if (r.success) {
-        this.userinfo = r.data
+        this.userinfo = Object.assign(this.userinfo, r.data)
       }
       const r2 = await friends()
       if (r2.success) {
@@ -74,18 +79,18 @@ export const useBaseStore = defineStore('base', {
         this.maskDialogMode = val.mode
       }
     },
-    updateExcludeRoutes(val) {
+    updateExcludeNames(val) {
       if (val.type === 'add') {
-        if (!this.excludeRoutes.find((v) => v === val.value)) {
-          this.excludeRoutes.push(val.value)
+        if (!this.excludeNames.find((v) => v === val.value)) {
+          this.excludeNames.push(val.value)
         }
       } else {
-        const resIndex = this.excludeRoutes.findIndex((v) => v === val.value)
+        const resIndex = this.excludeNames.findIndex((v) => v === val.value)
         if (resIndex !== -1) {
-          this.excludeRoutes.splice(resIndex, 1)
+          this.excludeNames.splice(resIndex, 1)
         }
       }
-      // console.log('store.excludeRoutes', store.excludeRoutes,val)
+      // console.log('store.excludeNames', store.excludeNames,val)
     }
   }
 })

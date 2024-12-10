@@ -1,8 +1,8 @@
-import axios from 'axios'
+import axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import config from '@/config'
-import globalMethods from './index'
+import { _notice } from './index'
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: config.baseUrl,
   timeout: 60000
 })
@@ -22,11 +22,11 @@ axiosInstance.interceptors.request.use(
 )
 
 /*
- * 响应拦截器，目前的处理是，无论失败或者成功都会返回{ code: xxx, data: xxx }这种类型的数据，没有reject和抛error。
- * 如果有问题，拦截器里会进行提示，然后返回{ code: Xxx, data:xxx }这种数据。在then里面总是会接收到
+ * 响应拦截器，无论失败或者成功都会返回{ success: boolean, data: xxx }这种类型的数据，没有reject和抛error。
+ * 如果有问题，拦截器里会进行提示。在then里面总是会接收到返回值
  * */
 axiosInstance.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     // console.log('response',response)
     /*
      * 响应成功的拦截器，主要是对data作处理，如果没有返回data，那么会添加一个data字段，并把response.data的内容合并到data里面，然后返回
@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
     const { data } = response
     // console.log(response)
     if (data === undefined || data === null || data === '') {
-      globalMethods.$notice('请求失败，请稍后重试！')
+      _notice('请求失败，请稍后重试！')
       return { success: false, code: 500, data: [] }
     } else if (typeof data === 'string') {
       return { success: true, code: 200, data }
@@ -55,7 +55,7 @@ axiosInstance.interceptors.response.use(
           data.success = true
         }
         if (resCode !== 200) {
-          globalMethods.$notice(response.data.message || '请求失败，请稍后重试！')
+          _notice(response.data.message || '请求失败，请稍后重试！')
         } else {
           data.success = true
         }
@@ -66,32 +66,32 @@ axiosInstance.interceptors.response.use(
       return data
     }
   },
-  (error) => {
+  (error: AxiosError) => {
     console.log('error', error)
     // console.log(error.response)
     // console.log(error.response.status)
     if (error.response === undefined) {
-      globalMethods.$notice('服务器响应超时')
+      _notice('服务器响应超时')
       return { success: false, code: 500, msg: '服务器响应超时', data: [] }
     }
     if (error.response.status >= 500) {
-      globalMethods.$notice('服务器出现错误')
+      _notice('服务器出现错误')
       return { success: false, code: 500, msg: '服务器出现错误', data: [] }
     }
     if (error.response.status === 404) {
-      globalMethods.$notice('接口不存在')
+      _notice('接口不存在')
       return { success: false, code: 404, msg: '接口不存在', data: [] }
     }
     if (error.response.status === 400) {
-      globalMethods.$notice('接口报错')
+      _notice('接口报错')
       return { success: false, code: 400, msg: '接口报错', data: [] }
     }
     if (error.response.status === 401) {
       return { success: false, code: 401, msg: '用户名或密码不正确', data: [] }
     } else {
-      const { data } = error.response
+      const data: any = error.response.data
       if (data === null || data === undefined) {
-        globalMethods.$notice('请求失败，请稍后重试！')
+        _notice('请求失败，请稍后重试！')
         return { success: true, code: 200, data: [] }
       } else {
         const resCode = data.code
@@ -99,7 +99,7 @@ axiosInstance.interceptors.response.use(
           data.data = { ...data }
         }
         if (resCode && typeof resCode == 'number' && resCode !== 200) {
-          globalMethods.$notice('请求失败，请稍后重试！')
+          _notice('请求失败，请稍后重试！')
         } else {
           data.code = 200
           data.success = true
@@ -110,4 +110,21 @@ axiosInstance.interceptors.response.use(
   }
 )
 
-export default axiosInstance
+export interface ApiResponse<T = any> {
+  data: T
+  success: boolean
+}
+
+export async function request<T = any>(config: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  /*
+   *  then和catch里面返回的数据必须加as const，否则调用方无法推断出类型
+   * */
+  return axiosInstance
+    .request<T>(config)
+    .then(({ data }) => {
+      return { success: true, data } as const
+    })
+    .catch((err) => {
+      return { success: false, data: err } as const
+    })
+}

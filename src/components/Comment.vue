@@ -15,8 +15,8 @@
         <dy-back mode="dark" img="close" direction="right" style="opacity: 0" />
         <div class="num">{{ _formatNumber(comments.length) }}条评论</div>
         <div class="right">
-          <Icon icon="prime:arrow-up-right-and-arrow-down-left-from-center" @click.stop="$no" />
-          <Icon icon="ic:round-close" @click.stop="cancel" />
+          <Icon icon="prime:arrow-up-right-and-arrow-down-left-from-center" @click.stop="_no" />
+          <Icon icon="ic:round-close" v-click="cancel" />
         </div>
       </div>
     </template>
@@ -157,7 +157,7 @@
             <AutoInput v-model="comment" placeholder="善语结善缘，恶言伤人心"></AutoInput>
             <div class="right">
               <img src="../assets/img/icon/message/call.png" @click="isCall = !isCall" />
-              <img src="../assets/img/icon/message/emoji-black.png" @click="$no" />
+              <img src="../assets/img/icon/message/emoji-black.png" @click="_no" />
             </div>
           </div>
           <img v-if="comment" src="../assets/img/icon/message/up.png" @click="send" />
@@ -178,9 +178,9 @@ import FromBottomDialog from './dialog/FromBottomDialog.vue'
 import Loading from './Loading.vue'
 import Search from './Search.vue'
 import {
-  $no,
   _checkImgUrl,
   _formatNumber,
+  _no,
   _showSelectDialog,
   _sleep,
   _time,
@@ -251,10 +251,16 @@ export default {
   },
   mounted() {},
   methods: {
+    _no,
     _time,
     _formatNumber,
     _checkImgUrl,
-    $no,
+    // 评论发送成功后调用此方法
+    resetSelectStatus() {
+      this.friends.all.forEach((item) => {
+        item.select = false // 重置选中状态
+      })
+    },
     async handShowChildren(item) {
       this.loadChildrenItemCId = item.comment_id
       this.loadChildren = true
@@ -268,18 +274,29 @@ export default {
       }
     },
     send() {
-      this.comments.push({
-        id: '2',
-        avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
-        name: '成都旅行',
-        text: this.comment,
-        loveNum: 27,
-        isLoved: false,
-        time: '2021-08-24 20:33',
-        children: []
-      })
+      if (!this.comment.trim()) {
+        return // 如果评论内容为空，直接返回
+      }
+      const baseStore = useBaseStore()
+      const commentData = {
+        ip_location: baseStore.userinfo.ip_location,
+        aweme_id: this.videoId,
+        content: this.comment,
+        create_time: Date.now(),
+        uid: String(baseStore.userinfo.uid),
+        short_id: String(baseStore.userinfo.short_id),
+        unique_id: baseStore.userinfo.unique_id,
+        signature: baseStore.userinfo.signature,
+        nickname: baseStore.userinfo.nickname,
+        avatar: baseStore.userinfo.avatar_168x168['url_list'][0]
+        // 其他必要的字段可以根据你的需求添加
+      }
+      // this.$props.item.statistics.comment_count++
+      // _updateItem(this.$props, 'isLoved', !props.item.isLoved)
+      this.comments.unshift(commentData)
       this.comment = ''
       this.isCall = false
+      this.resetSelectStatus()
     },
     async getData() {
       let res: any = await videoComments({ id: this.videoId })
@@ -328,10 +345,8 @@ export default {
 @import '../assets/less/index';
 
 .title {
-  z-index: 2;
-  position: fixed;
-  left: 0;
-  right: 0;
+  box-sizing: border-box;
+  width: 100%;
   height: 40rem;
   padding: 0 15rem;
   background: white;
@@ -370,16 +385,13 @@ export default {
 
 .comment {
   color: #000;
-  width: 100vw;
-  height: v-bind(height);
+  width: 100%;
   background: #fff;
   z-index: 5;
-  border-radius: 10rem 10rem 0 0;
 
   .wrapper {
     width: 100%;
     position: relative;
-    padding-top: 40rem;
     padding-bottom: 60rem;
   }
 
@@ -529,7 +541,7 @@ export default {
     border-radius: 10rem 10rem 0 0;
     background: white;
     position: fixed;
-    width: 100vw;
+    width: 100%;
     bottom: 0;
     z-index: 3;
 
@@ -601,7 +613,7 @@ export default {
         }
 
         .auto-input {
-          width: calc(100vw - 180rem);
+          width: calc(100% - 160rem);
         }
       }
 

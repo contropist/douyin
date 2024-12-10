@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
- <a href="README.en.md">English</a> | <a href="README.es.md">Spanish</a> | <a href="README.de.md">German</a> | 
-<a href="README.fr.md">French</a> | <a href="README.md">简体中文</a> |  <a href="README.ja.md">日本語</a> 
+ <a href="docs/README.en.md">English</a> | <a href="docs/README.es.md">Spanish</a> | <a href="docs/README.de.md">German</a> | 
+<a href="docs/README.fr.md">French</a> | <a href="README.md">简体中文</a> |  <a href="docs/README.ja.md">日本語</a> 
 </p>
 
 <p align="center">
@@ -13,8 +13,9 @@
   <a><img src="https://img.shields.io/badge/Powered%20by-Vue-blue"/></a>
 </p>
 
-`douyin-vue` 是一个模仿 `抖音|TikTok` 的移动端短视频项目，它基于 [`Vue`](https://cn.vuejs.org/)、[`Vite`](https://cn.vitejs.dev/)
-实现。使用了最新的 `Vue` 全家桶技术栈。Api 数据保存在项目本地，视频采集自`抖音|TikTok`，图集采集自`小红书|Xiaohongshu`，通过 [`axios-mock-adapter`](https://github.com/ctimmerm/axios-mock-adapter) 库拦截Api 并返回本地json数据，模拟出真实的后端请求
+`douyin-vue` 是一个模仿 `抖音|TikTok` 的移动端短视频项目。`Vue` 在移动端的"最佳实践"，媲美原生 `App` 丝滑流畅的使用体验。使用了最新的 `Vue` 技术栈，基于 [`Vue3`](https://cn.vuejs.org/)、[`Vite5`](https://cn.vitejs.dev/)
+、[`Pinia`](https://pinia.vuejs.org/)实现。数据保存在项目本地，通过 [`axios-mock-adapter`](https://github.com/ctimmerm/axios-mock-adapter) 库拦截Api 并返回本地json数据，模拟真实后端请求
+
 
 <div>
 <img width="150px" src='docs/imgs/1.gif' />
@@ -22,44 +23,53 @@
 <img width="150px" src='docs/imgs/3.gif' />
 <img width="150px" src='docs/imgs/4.gif' />
 <img width="150px" src='docs/imgs/5.gif' />
-<img width="150px" src='docs/imgs/img-1.jpg' />
-<img width="150px" src='docs/imgs/img-2.jpg' />
-<img width="150px" src='docs/imgs/img-3.jpg' />
-<img width="150px" src='docs/imgs/img-4.jpg' />
-<img width="150px" src='docs/imgs/img-5.jpg' />
 </div>
 
 ## 在线访问
 
-Github pages: [https://zyronon.github.io/douyin/](https://zyronon.github.io/douyin/)
+[//]: # (Gitee Pages: [https://zyronon.gitee.io/douyin/]&#40;https://zyronon.gitee.io/douyin/&#41;&#40;中国地区推荐访问这个地址&#41;   )
+[//]: # (注意：Gitee Pages现在无法更新，代码不是最新的。如果你能翻墙推荐访问下面地址  )
 
-~~Vercel:  [http://dy.ttentau.top/](http://dy.ttentau.top/) (中国推荐访问这个)~~
+Github Pages: [https://dy.ttentau.top/](https://dy.ttentau.top/)  
 
-~~Netlify: [https://douyins.netlify.app/](https://douyins.netlify.app/) (中国以外地区推荐访问这个)~~
+[//]: # (Gitee pages: [https://dy.ttentau.top/]&#40;https://dy.ttentau.top/&#41; &#40;中国地区推荐访问这个地址&#41;  )
+[//]: # (Github pages: [https://zyronon.github.io/douyin/]&#40;https://zyronon.github.io/douyin/&#41;  )
+[//]: # (Netlify: [https://douyins.netlify.app/]&#40;https://douyins.netlify.app/&#41;)
+[//]: # (Vercel:  [https://douyins.vercel.app]&#40;https://douyins.vercel.app&#41;)
+[//]: # (Android Apk: https://github.com/zyronon/douyin/releases)
+[//]: # (**注意**：`PC` 必须将浏览器切到手机模式，先按 `F12` 调出控制台，再按 `Ctrl+Shift+M`才能正常预览)
+[//]: # (**注意**：手机请用  [Via 浏览器]&#40;https://viayoo.com/zh-cn/&#41;  或 Chrome 浏览器预览。其它浏览器可能会强制将视频全屏，导致无法正常显示)
 
-Vercel和Netlify分别送的100G免费流量已经用完了...
+## 链接
 
-Android Apk: https://github.com/zyronon/douyin/releases
-
-**注意**：`PC` 必须将浏览器切到手机模式，先按 `F12` 调出控制台，再按 `Ctrl+Shift+M`才能正常预览
-
-**注意**：手机请用  [Via 浏览器](https://viayoo.com/zh-cn/)  或 Chrome 浏览器预览。其它浏览器可能会强制将视频全屏，导致无法正常显示
-
-
-## 免责声明
-
-本项目仅适用于学习和研究，不得用于商业使用
+【模仿抖音系列】一：[200行代码实现类似Swiper.js的轮播组件](https://juejin.cn/post/7360512664317018146)  
+【模仿抖音系列】二：[实现抖音 “视频无限滑动“效果](https://juejin.cn/post/7361614921519054883)  
+【模仿抖音系列】三：[Vue 路由使用介绍以及添加转场动画](https://juejin.cn/post/7362528152777130025)  
+【模仿抖音系列】四：[Vue 有条件路由缓存，就像传统新闻网站一样](https://juejin.cn/post/7365334891473240101)  
+【模仿抖音系列】五：[Github Actions 部署 Pages、同步到 Gitee、翻译 README 、 打包 docker 镜像](https://juejin.cn/post/7365757742381957161)  
+【模仿抖音系列】六：[使用rem、动态vh自适应移动端](https://juejin.cn/post/7374452765273538595)
 
 ## 运行
+注意：本项目仅适用于学习和研究，不得用于商业使用
 
-### 快速部署至Vercel
+### 快速部署至 Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/zyronon/douyin)
 
+### 部署到 Docker
+```bash
+# pull Docker image
+docker pull ghcr.io/zyronon/douyin-vue:latest
+
+# start container, nginx reverse proxy custom port, for example: docker run -d -p 80:80 ghcr.io/zyronon/douyin-vue:latest
+docker run -d -p 80:80 ghcr.io/zyronon/douyin-vue:latest
+```
 ### 本地开发
+**注意：必须 git 命令 clone 下来才能运行，下载 zip 包是无法运行的。如果 clone 速度太慢，推荐使用 gitee 地址**
 
 ```bash
-git clone https://github.com/zyronon/douyin.git
+git clone https://gitee.com/zyronon/douyin.git (中国使用)
+          https://github.com/zyronon/douyin.git 
 cd douyin
 npm install
 npm run dev
@@ -67,13 +77,7 @@ npm run dev
 
 打开浏览器并访问: [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
-**注意：PC 必须将浏览器切到手机模式，先按 `F12` 调出控制台，再按 `Ctrl+Shift+M` 才能正常预览**
-
-## 链接
-
-- `开源中国`: https://mp.weixin.qq.com/s/TWowmZpU_ojE5G2KzXuU8g
-- `V2EX`: https://www.v2ex.com/t/1028678
-- `掘金`: https://juejin.cn/post/7352813352051687458
+**注意：需要将浏览器切至手机模式，先按 `F12` 调出控制台，再按 `Ctrl+Shift+M` 才能正常预览**
 
 ## 数据来源
 
@@ -96,6 +100,7 @@ npm run dev
 图片来自于小红书公开笔记
 
 以上内容均是互联网公开信息
+
 
 ## 功能与建议
 

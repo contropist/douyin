@@ -1,21 +1,11 @@
 <template>
   <router-view v-slot="{ Component }">
     <transition :name="transitionName">
-      <keep-alive :exclude="store.excludeRoutes">
+      <keep-alive :exclude="store.excludeNames">
         <component :is="Component" />
       </keep-alive>
     </transition>
   </router-view>
-  <BaseMask v-if="!isMobile" />
-  <div v-if="!isMobile" class="guide">
-    <Icon icon="mynaui:danger-triangle" />
-    <div class="txt">
-      <h2>切换至手机模式才可正常使用</h2>
-      <h3>1. 按 F12 调出控制台</h3>
-      <h3>2. 按 Ctrl+Shift+M，或点击下面图标</h3>
-    </div>
-    <img src="@/assets/img/guide.png" alt="" />
-  </div>
   <Call />
 </template>
 <script setup lang="ts">
@@ -30,10 +20,10 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import BaseMask from '@/components/BaseMask.vue'
+import { BASE_URL } from '@/config'
 
 const store = useBaseStore()
 const route = useRoute()
-const isMobile = ref(/Mobi|Android|iPhone/i.test(navigator.userAgent))
 const transitionName = ref('go')
 
 // watch $route 决定使用哪种过渡
@@ -41,7 +31,7 @@ watch(
   () => route.path,
   (to, from) => {
     store.setMaskDialog({ state: false, mode: store.maskDialogMode })
-    //footer下面的5个按钮，对跳不要用动画
+    //底部tab的按钮，跳转是不需要用动画的
     let noAnimation = [
       '/',
       '/home',
@@ -63,26 +53,29 @@ watch(
   }
 )
 
-function setVh() {
+function resetVhAndPx() {
   let vh = window.innerHeight * 0.01
   document.documentElement.style.setProperty('--vh', `${vh}px`)
+  //document.documentElement.style.fontSize = document.documentElement.clientWidth / 375 + 'px'
 }
 
 onMounted(() => {
   store.init()
-  setVh()
+  resetVhAndPx()
   // 监听resize事件 视图大小发生变化就重新计算1vh的值
   window.addEventListener('resize', () => {
-    location.href = '/'
-    setVh()
+    location.href = BASE_URL + '/'
+    resetVhAndPx()
   })
-  //禁止选中文字
-  document.onselectstart = new Function('return false') as any
 })
 </script>
 
 <style lang="less">
 @import './assets/less/index';
+
+* {
+  user-select: none;
+}
 
 #app {
   height: 100%;
@@ -91,32 +84,12 @@ onMounted(() => {
   font-size: 14rem;
 }
 
-.guide {
-  color: white;
-  z-index: 999;
-  background: var(--active-main-bg);
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 16rem;
-  overflow: hidden;
-  text-align: center;
-
-  svg {
-    margin-top: 10rem;
-    font-size: 40rem;
-    color: red;
-  }
-
-  .txt {
-    text-align: left;
-    padding: 0 24rem;
-  }
-
-  img {
-    display: block;
-    width: 350rem;
+@media screen and (min-width: 500px) {
+  #app {
+    width: 500px !important;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 

@@ -57,7 +57,7 @@
             品牌榜
           </div>
         </div>
-        <!--        TODO 滚动到下面的时候，应该禁止slide-move，因为第个slideitem的高度不一样，高的切到矮的，会闪屏-->
+        <!--        TODO 滚动到下面的时候，应该禁止slide-move，因为每个slideitem的高度不一样，高的切到矮的，会闪屏-->
         <SlideHorizontal v-model:index="data.slideIndex" :style="slideListHeight">
           <SlideItem>
             <div class="slide0" ref="slide0">
@@ -179,7 +179,7 @@
                 <div class="brands">
                   <div
                     class="brand"
-                    @click="toggleKey(key)"
+                    @click="toggleKey(key, i)"
                     :key="i"
                     :class="{ active: key === data.selectBrandKey }"
                     v-for="(key, i) in Object.keys(data.brandRankList)"
@@ -198,7 +198,6 @@
                       <div class="avatar-wrapper" :class="item.living ? 'living' : ''">
                         <div class="avatar-out-line"></div>
                         <img v-lazy="_checkImgUrl(item.logo)" alt="" class="avatar" />
-                        <!--                      <img :src="item.logo" class="avatar">-->
                       </div>
                       <div class="desc">{{ item.name }}</div>
                     </div>
@@ -211,7 +210,7 @@
                 <div class="more" @click="_no">查看完整品牌榜 ></div>
               </div>
 
-              <SlideRowList :autoplay="true" indicatorType="bullets">
+              <SlideHorizontal v-model:index="data.adIndex" :autoplay="true" indicator>
                 <SlideItem>
                   <div class="ad">AD1</div>
                 </SlideItem>
@@ -236,7 +235,7 @@
                 <SlideItem>
                   <div class="ad">AD8</div>
                 </SlideItem>
-              </SlideRowList>
+              </SlideHorizontal>
             </div>
           </SlideItem>
         </SlideHorizontal>
@@ -247,11 +246,8 @@
 <script setup lang="ts">
 import Search from '../../components/Search.vue'
 import Dom from '../../utils/dom'
-import { computed, nextTick, watch } from 'vue'
+import { computed, nextTick, onMounted, reactive, watch } from 'vue'
 import { _checkImgUrl, _formatNumber, _no, _showSimpleConfirmDialog, sampleSize } from '@/utils'
-
-import { useBaseStore } from '@/store/pinia'
-import { onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNav } from '@/utils/hooks/useNav'
 
@@ -261,9 +257,9 @@ defineOptions({
 
 const router = useRouter()
 const nav = useNav()
-const store = useBaseStore()
 const data = reactive({
   isExpand: false,
+  adIndex: 0,
   history: [
     '历史记录1',
     '历史记录2',
@@ -493,7 +489,7 @@ const data = reactive({
     {
       name: '给我一首歌的时间',
       mp3: 'https://m3.8js.net:99/1938/041204380445445.mp3',
-      cover: new URL('../../assets/img/music-cover/13.jpg', import.meta.url).href,
+      cover: new URL('../../assets/img/music-cover/18.jpg', import.meta.url).href,
       author: '周杰伦',
       duration: 60,
       use_count: 37441000,
@@ -696,7 +692,7 @@ watch(
         } else {
           data.selectBrandKeyIndex++
         }
-        data.selectBrandKey = brandListKeys[data.selectBrandKeyIndex]
+        data.selectBrandKey = brandListKeys.value[data.selectBrandKeyIndex]
       }, 3000)
     } else {
       clearInterval(data.timer)
@@ -710,8 +706,9 @@ onMounted(() => {
   refresh()
 })
 
-function toggleKey(key) {
+function toggleKey(key: string, i: number) {
   data.selectBrandKey = key
+  data.selectBrandKeyIndex = i
   clearInterval(data.timer)
 }
 
@@ -779,7 +776,7 @@ function toggle() {
     align-items: center;
     border-bottom: 1px solid var(--line-color);
     position: fixed;
-    width: 100vw;
+    width: 100%;
     box-sizing: border-box;
     top: 0;
 
@@ -913,9 +910,10 @@ function toggle() {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            min-width: 0;
 
             .center {
-              width: calc(100vw - 140rem);
+              width: calc(100% - 140rem);
               box-sizing: border-box;
               //padding: 0 1rem;
               //flex: 1;
@@ -983,7 +981,7 @@ function toggle() {
             justify-content: space-between;
 
             .center {
-              width: calc(100vw - 160rem);
+              width: calc(100% - 160rem);
               box-sizing: border-box;
               //padding: 0 1rem;
               //flex: 1;
@@ -1025,6 +1023,7 @@ function toggle() {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                flex-shrink: 0;
                 font-size: 10rem;
                 color: var(--second-text-color);
                 margin-left: 5rem;
@@ -1095,7 +1094,7 @@ function toggle() {
             justify-content: space-between;
 
             .center {
-              width: calc(100vw - 150rem);
+              width: calc(100% - 150rem);
               box-sizing: border-box;
               //padding: 0 1rem;
               //flex: 1;
@@ -1200,7 +1199,7 @@ function toggle() {
               justify-content: space-between;
 
               .center {
-                width: calc(100vw - 150rem);
+                width: calc(100% - 150rem);
                 box-sizing: border-box;
                 //padding: 0 1rem;
                 //flex: 1;

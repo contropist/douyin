@@ -9,7 +9,7 @@
         </div>
         <div class="right">
           <img
-            @click="mitt.emit('showAudioCall')"
+            @click="bus.emit(EVENT_KEY.SHOW_AUDIO_CALL)"
             src="../../../assets/img/icon/message/chat/call.png"
             alt=""
           />
@@ -187,13 +187,13 @@
 </template>
 <script setup lang="ts">
 import ChatMessage from '../components/ChatMessage.vue'
-import { computed, inject, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
 import Loading from '@/components/Loading.vue'
 import { useBaseStore } from '@/store/pinia'
 import { _checkImgUrl, _no, _sleep } from '@/utils'
-import $ from 'jquery'
 import { useRouter } from 'vue-router'
 import { useNav } from '@/utils/hooks/useNav'
+import bus, { EVENT_KEY } from '@/utils/bus'
 
 let CALL_STATE = {
   REJECT: 0,
@@ -234,10 +234,10 @@ defineOptions({
   name: 'Chat'
 })
 
-const mitt = inject('mitt')
 const router = useRouter()
 const nav = useNav()
 const store = useBaseStore()
+const msgWrapper = ref<HTMLDivElement>()
 const data = reactive({
   previewImg: new URL('../../../assets/img/poster/3.jpg', import.meta.url).href,
   videoCall: [],
@@ -488,27 +488,26 @@ const data = reactive({
 })
 
 onMounted(() => {
-  $('img').on('load', scrollBottom)
+  msgWrapper.value
+    .querySelectorAll('img')
+    .forEach((item) => item.addEventListener('load', scrollBottom))
   scrollBottom()
 })
 
 onUnmounted(() => {
-  $('img').off('load', scrollBottom)
+  msgWrapper.value
+    .querySelectorAll('img')
+    .forEach((item) => item.removeEventListener('load', scrollBottom))
 })
 
 const isExpand = computed(() => {
   return data.showOption
-})
-const isTyping = computed(() => {
-  return data.typing || isExpand
 })
 
 function handleClick() {
   data.recording = true
   data.showOption = false
 }
-
-const msgWrapper = ref()
 
 function scrollBottom() {
   nextTick(() => {

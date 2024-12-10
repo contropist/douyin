@@ -11,7 +11,7 @@
         <span class="belong">{{ store.userinfo.nickname }}的红包</span>
         <div class="password">大吉大利</div>
         <span class="money">0.01元</span>
-        <!--        <span class="notice" @click="$nav('/me/money')">已存入我的零钱，可直接使用></span>-->
+        <!--        <span class="notice" @click="$router.push('/me/money')">已存入我的零钱，可直接使用></span>-->
         <span class="notice" @click="_no">已存入我的零钱，可直接使用></span>
       </div>
       <img src="../../assets/img/icon/message/chat/money-detail-bg.png" alt="" class="bg" />
@@ -21,8 +21,6 @@
 <script setup lang="ts">
 import { useBaseStore } from '@/store/pinia'
 import { _checkImgUrl, _no } from '@/utils'
-import { useRouter } from 'vue-router'
-import { useNav } from '@/utils/hooks/useNav'
 
 defineOptions({
   name: 'RedPacketDetail'
@@ -36,8 +34,6 @@ defineProps({
     }
   }
 })
-const router = useRouter()
-const nav = useNav()
 const store = useBaseStore()
 </script>
 

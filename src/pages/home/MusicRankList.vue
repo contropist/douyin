@@ -305,7 +305,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { computed, onDeactivated, onMounted, onUnmounted, reactive } from 'vue'
-import { $notice, _checkImgUrl, _dateFormat, _duration, _formatNumber } from '@/utils/index.jsx'
+import { _checkImgUrl, _dateFormat, _duration, _formatNumber, _notice } from '@/utils/index.jsx'
 import { useNav } from '@/utils/hooks/useNav'
 
 defineOptions({
@@ -439,7 +439,7 @@ const data = reactive({
     {
       name: '给我一首歌的时间',
       mp3: 'https://m3.8js.net:99/1938/041204380445445.mp3',
-      cover: new URL('../../assets/img/music-cover/13.jpg', import.meta.url).href,
+      cover: new URL('../../assets/img/music-cover/18.jpg', import.meta.url).href,
       author: '周杰伦',
       duration: 60,
       use_count: 37441000,
@@ -523,9 +523,9 @@ function scroll(e) {
 function toggleCollect(item) {
   item.is_collect = !item.is_collect
   if (item.is_collect) {
-    $notice('收藏成功')
+    _notice('收藏成功')
   } else {
-    $notice('取消收藏')
+    _notice('取消收藏')
   }
 }
 
